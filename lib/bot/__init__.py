@@ -1,18 +1,14 @@
-#====================================================SETUP==============================================================
-#---------------------------------------------------IMPORTS-------------------------------------------------------------
+# ====================================================SETUP==============================================================
+# ---------------------------------------------------IMPORTS-------------------------------------------------------------
 import datetime
-# from asyncio import sleep
-from glob import glob
 import os
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
-# from discord import Embed, File
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import CommandNotFound
 from ..db import db
-from discord.ext import commands
 
-#---------------------------------------------------CONSTANTS-----------------------------------------------------------
+# ---------------------------------------------------CONSTANTS-----------------------------------------------------------
 PREFIX = "$"
 OWNER_IDS = [523295657381855235]
 GUILD_ID = 721441377627406467
@@ -21,7 +17,7 @@ NOTIFY_CHANNEL = 721461125723717633
 BOT_NAME = 'MANDOBOT'
 TIMESTAMP = datetime.datetime.utcnow()
 
-#------------------------------------------------COG FILE FINDER--------------------------------------------------------
+# ------------------------------------------------COG FILE FINDER--------------------------------------------------------
 print(f'{TIMESTAMP}: SEARCHING FOR COGS')
 COG_DIR = os.listdir(f'/home/pi/Desktop/Mandobot2/lib/cogs')
 COGLIST = []
@@ -32,7 +28,8 @@ COGS = [os.path.splitext(x)[0] for x in COGLIST]
 print(f'{TIMESTAMP}: SEARCH COMPLETED')
 print(f'{TIMESTAMP}: COGS DISCOVERED: {COGS}')
 
-#-----------------------------------------------------READY-------------------------------------------------------------
+
+# -----------------------------------------------------READY-------------------------------------------------------------
 class Ready(object):
     def __init__(self):
         for cog in COGS:
@@ -41,11 +38,11 @@ class Ready(object):
     def ready_up(self, cog):
         setattr(self, cog, True)
 
-
     def all_ready(self):
         return all([getattr(self, cog) for cog in COGS])
 
-#------------------------------------------------------BOT--------------------------------------------------------------
+
+# ------------------------------------------------------BOT--------------------------------------------------------------
 class Bot(BotBase):
     def __init__(self):
         self.PREFIX = PREFIX
@@ -134,5 +131,6 @@ class Bot(BotBase):
         if not message.author.bot and message.author != message.guild.me:
             await self.process_commands(message)
 
-#------------------------------------------------------END--------------------------------------------------------------
+
+# ------------------------------------------------------END--------------------------------------------------------------
 bot = Bot()
