@@ -112,6 +112,7 @@ class Mod(Cog):
         else:
             await ctx.send("The limit provided is not within acceptable bounds.")
 
+    # ----------------------------------------------------------------------------------------------------MUTE SETUP--
     async def mute_members(self, message, targets, hours, reason):
         unmutes = []
 
@@ -147,6 +148,8 @@ class Mod(Cog):
 
         return unmutes
 
+    # ----------------------------------------------------------------------------------------------------MEMBER MUTE--
+
     @command(name="mute")
     @bot_has_permissions(manage_roles=True)
     @has_permissions(manage_roles=True, manage_guild=True)
@@ -163,11 +166,13 @@ class Mod(Cog):
                 await sleep(hours)
                 await self.unmute_members(ctx.guild, targets)
 
+
     @mute_command.error
     async def mute_command_error(self, ctx, exc):
         if isinstance(exc, CheckFailure):
             await ctx.send("Insufficient permissions to perform that task.")
 
+    # ----------------------------------------------------------------------------------------------------UNMUTE SETUP--
     async def unmute_members(self, guild, targets, *, reason="Mute time expired."):
         for target in targets:
             if self.mute_role in target.roles:
@@ -191,7 +196,8 @@ class Mod(Cog):
                     embed.add_field(name=name, value=value, inline=inline)
 
                 await self.log_channel.send(embed=embed)
-
+            
+    # ----------------------------------------------------------------------------------------------------MEMBER UNMUTE-
     @command(name="unmute")
     @bot_has_permissions(manage_roles=True)
     @has_permissions(manage_roles=True, manage_guild=True)
@@ -201,6 +207,11 @@ class Mod(Cog):
 
         else:
             await self.unmute_members(ctx.guild, targets, reason=reason)
+
+    @unmute_command.error
+    async def unmute_command_error(self, ctx, exc):
+        if isinstance(exc, CheckFailure):
+            await ctx.send("Insufficient permissions to perform that task.")
 
     # -------------------------------------------------------------------------------------------------------COG READY--
     @Cog.listener()
@@ -214,3 +225,4 @@ class Mod(Cog):
 
 def setup(bot):
     bot.add_cog(Mod(bot))
+
