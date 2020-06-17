@@ -152,7 +152,7 @@ class Mod(Cog):
 
     @command(name="mute")
     @bot_has_permissions(manage_roles=True)
-    @has_permissions(manage_roles=True, manage_guild=True)
+    @has_permissions(manage_roles=True)
     async def mute_command(self, ctx, targets: Greedy[Member], hours: Optional[int], *,
                            reason: Optional[str] = "No reason provided."):
         if not len(targets):
@@ -177,7 +177,7 @@ class Mod(Cog):
         for target in targets:
             if self.mute_role in target.roles:
                 role_ids = db.field("SELECT RoleIDs FROM mutes WHERE UserID = ?", target.id)
-                roles = [guild.get_role(int(id_)) for id_ in role_ids.split(",") if len(id_)]
+                roles = [guild.get_role(int(id_)) for id_ in role_ids.split(",") if role_ids and len(id_)]
 
                 db.execute("DELETE FROM mutes WHERE UserID = ?", target.id)
 
@@ -200,7 +200,7 @@ class Mod(Cog):
     # ----------------------------------------------------------------------------------------------------MEMBER UNMUTE-
     @command(name="unmute")
     @bot_has_permissions(manage_roles=True)
-    @has_permissions(manage_roles=True, manage_guild=True)
+    @has_permissions(manage_roles=True)
     async def unmute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "No reason provided."):
         if not len(targets):
             await ctx.send("One or more required arguments is missing.")
